@@ -5,9 +5,6 @@ import { embed } from "../src/embed.js";
 import { loadIndex, topK } from "../src/retrieve.js";
 import { answerQuestion, MIN_SCORE } from "../src/answer.js";
 
-const ansScores: number[] = [];
-const unScores: number[] = [];
-
 type Q = { q: string; expected: string[] };
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
@@ -20,6 +17,8 @@ const questions = JSON.parse(
 ) as Q[];
 const index = await loadIndex();
 
+const ansScores: number[] = [];
+const unScores: number[] = [];
 let answerable = 0, hit3 = 0, falseRefusals = 0;
 let unanswerable = 0, correctRefusals = 0;
 let fullAnswered = 0, fullCitedExpected = 0, fullCorrectRefusals = 0;
@@ -30,8 +29,9 @@ for (const item of questions) {
   const top = hits[0]?.score ?? 0;
   const isAnswerable = item.expected.length > 0;
 
+  (isAnswerable ? ansScores : unScores).push(top);
+
   if (isAnswerable) {
-    (isAnswerable ? ansScores : unScores).push(top);
     answerable++;
     const hit = hits.slice(0, 3).some((h) => item.expected.includes(h.c.docId));
     if (hit) hit3++;
@@ -50,18 +50,29 @@ for (const item of questions) {
     const r = await answerQuestion(item.q);
     if (isAnswerable) {
       if (!r.refused) fullAnswered++;
-      if (r.sources.some((s) => item.expected.includes(s.id.split("#")[0]!))) fullCitedExpected++;
-    } else if (r.refused) fullCorrectRefusals++;
-    await sleep(12000); // avoiding rate limit
+      const citedExpected = r.sources.some((s) => item.expected.includes(s.id.split("#")[0]!));
+      if (citedExpected) fullCitedExpected++;
+      else failures.push(`FULL NO EXPECTED CITATION  ${item.q}  -> ${r.sources.map((s) => s.id).join(", ") || "(none)"}`);
+    } else if (r.refused) {
+      fullCorrectRefusals++;
+    } else {
+      failures.push(`FULL NOT REFUSED  ${item.q}  -> ${r.answer.slice(0, 200)}`);
+    }
+    if (r.topScore >= MIN_SCORE) await sleep(12000);
   }
 }
 
 const pct = (n: number, d: number) => (d ? ((100 * n) / d).toFixed(1) : "n/a");
+const range = (a: number[]) =>
+  a.length ? `min ${Math.min(...a).toFixed(3)}, max ${Math.max(...a).toFixed(3)}` : "n/a";
+
 const result = {
   label,
   date: new Date().toISOString(),
   threshold: MIN_SCORE,
   questions: questions.length,
+  answerableTop1: range(ansScores),
+  unanswerableTop1: range(unScores),
   hitAt3: `${hit3}/${answerable} (${pct(hit3, answerable)}%)`,
   falseRefusalRate: `${falseRefusals}/${answerable} (${pct(falseRefusals, answerable)}%)`,
   refusalAccuracy: `${correctRefusals}/${unanswerable} (${pct(correctRefusals, unanswerable)}%)`,
@@ -71,9 +82,6 @@ const result = {
     fullCorrectRefusals: `${fullCorrectRefusals}/${unanswerable}`,
   }),
 };
-
-console.log("answerable top-1: min", Math.min(...ansScores).toFixed(3), "max", Math.max(...ansScores).toFixed(3));
-console.log("unanswerable top-1: min", Math.min(...unScores).toFixed(3), "max", Math.max(...unScores).toFixed(3));
 
 console.log(result);
 console.log(failures.length ? "\nFailures:\n" + failures.join("\n") : "\nNo failures.");

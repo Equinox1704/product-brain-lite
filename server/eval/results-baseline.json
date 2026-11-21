@@ -1,9 +1,11 @@
 {
   "result": {
     "label": "baseline",
-    "date": "2026-11-21T22:44:29.122Z",
+    "date": "2026-11-21T22:59:04.591Z",
     "threshold": 0.3,
     "questions": 23,
+    "answerableTop1": "min 0.526, max 0.738",
+    "unanswerableTop1": "min 0.183, max 0.645",
     "hitAt3": "17/18 (94.4%)",
     "falseRefusalRate": "0/18 (0.0%)",
     "refusalAccuracy": "1/5 (20.0%)"
