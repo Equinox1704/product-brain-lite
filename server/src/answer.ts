@@ -3,7 +3,7 @@ import { embed } from "./embed.js";
 import { loadIndex, topK } from "./retrieve.js";
 import type { Chunk } from "./types.js";
 
-const MIN_SCORE = 0.3;
+export const MIN_SCORE = 0.3;
 const K = 5;
 const NOT_FOUND = "I can't find that in the documents.";
 const UNVERIFIED = "I couldn't produce a verifiable, cited answer for that.";
@@ -15,24 +15,34 @@ type Hit = { c: Chunk; score: number };
 let index: Chunk[] | null = null;
 
 async function callLLM(system: string, user: string): Promise<string> {
-  const res = await fetch(`${process.env.LLM_BASE_URL}/chat/completions`, {
-    method: "POST",
-    headers: {
-      "content-type": "application/json",
-      authorization: `Bearer ${process.env.LLM_API_KEY}`,
-    },
-    body: JSON.stringify({
-      model: process.env.LLM_MODEL,
-      temperature: 0,
-      messages: [
-        { role: "system", content: system },
-        { role: "user", content: user },
-      ],
-    }),
-  });
-  if (!res.ok) throw new Error(`LLM ${res.status}: ${await res.text()}`);
-  const data = (await res.json()) as any;
-  return data.choices?.[0]?.message?.content ?? "";
+  for (let attempt = 0; attempt < 6; attempt++) {
+    const res = await fetch(`${process.env.LLM_BASE_URL}/chat/completions`, {
+      method: "POST",
+      headers: {
+        "content-type": "application/json",
+        authorization: `Bearer ${process.env.LLM_API_KEY}`,
+      },
+      body: JSON.stringify({
+        model: process.env.LLM_MODEL,
+        temperature: 0,
+        messages: [
+          { role: "system", content: system },
+          { role: "user", content: user },
+        ],
+      }),
+    });
+    if (res.status === 429) {
+      const header = Number(res.headers.get("retry-after"));
+      const waitMs = (Number.isFinite(header) && header > 0 ? header : 15) * 1000 + 500;
+      console.warn(`Rate limited, waiting ${Math.round(waitMs / 1000)}s...`);
+      await new Promise((r) => setTimeout(r, waitMs));
+      continue;
+    }
+    if (!res.ok) throw new Error(`LLM ${res.status}: ${await res.text()}`);
+    const data = (await res.json()) as any;
+    return data.choices?.[0]?.message?.content ?? "";
+  }
+  throw new Error("LLM rate limit: gave up after 6 attempts");
 }
 
 async function generate(system: string, userMsg: string, hits: Hit[]) {

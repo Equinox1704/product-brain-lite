@@ -1,0 +1,94 @@
+[
+  {
+    "q": "Why was subscriber CSV export postponed, and why was that postponement continued in June?",
+    "expected": ["DOC-003", "DOC-011"]
+  },
+  {
+    "q": "Why is hard-bounce suppression workspace-wide, even when unsubscribe handling can be publication-scoped?",
+    "expected": ["DOC-008", "DOC-005"]
+  },
+  {
+    "q": "Does opening an onboarding email complete an in-app checklist task, and what actually determines checklist completion?",
+    "expected": ["DOC-002", "CHAT-001", "CHAT-006"]
+  },
+  {
+    "q": "Why were onboarding emails initially restricted to administrators, and what later changed for invited campaign editors?",
+    "expected": ["DOC-001", "CHAT-003"]
+  },
+  {
+    "q": "Why is onboarding checklist dismissal stored per user while task completion is shared across the workspace?",
+    "expected": ["DOC-002", "TCK-002"]
+  },
+  {
+    "q": "Why did Pulse initially use workspace-wide unsubscribe suppression, and why was that policy later changed?",
+    "expected": ["DOC-004", "CHAT-004", "DOC-005"]
+  },
+  {
+    "q": "After publication-scoped unsubscribes were approved, what happened to existing workspace-wide opt-outs, and why?",
+    "expected": ["DOC-005", "TCK-005", "DOC-014"]
+  },
+  {
+    "q": "Why could aggregate campaign PDF reporting remain in scope while subscriber CSV export was postponed?",
+    "expected": ["DOC-003", "TCK-004"]
+  },
+  {
+    "q": "Why does the audience CSV import use partial acceptance with a preview, and why are downloadable rejected-row files postponed?",
+    "expected": ["DOC-006", "CHAT-007"]
+  },
+  {
+    "q": "How does recurring subscriber sync differ from a one-time CSV import, and can an upstream subscribed flag clear a Pulse suppression?",
+    "expected": ["DOC-006", "DOC-007"]
+  },
+  {
+    "q": "Why was subscriber sync initially nightly-only, and what later justified allowing an administrator-triggered refresh?",
+    "expected": ["DOC-007", "DOC-013", "TCK-007", "CHAT-012"]
+  },
+  {
+    "q": "What are the retry limits for temporary delivery failures, and how should duplicate bounce callbacks affect the retry count?",
+    "expected": ["DOC-008", "TCK-008"]
+  },
+  {
+    "q": "Why was publication-specific unsubscribe confirmation wording initially postponed, and under what conditions was it later permitted?",
+    "expected": ["DOC-009", "DOC-014", "TCK-009", "CHAT-015"]
+  },
+  {
+    "q": "How should the pricing preview count subscribers who belong to multiple audiences, and why was annual-prepayment checkout postponed?",
+    "expected": ["DOC-010", "TCK-011", "CHAT-009"]
+  },
+  {
+    "q": "Why were automatically emailed campaign report attachments rejected in favor of an in-app review reminder?",
+    "expected": ["DOC-012", "TCK-013", "CHAT-014"]
+  },
+  {
+    "q": "Can support provide a one-off subscriber CSV download while the product export feature is blocked, and why?",
+    "expected": ["CHAT-005", "DOC-011", "CHAT-010"]
+  },
+  {
+    "q": "What evidence is required before a roadmap item can be labelled released, and does ready for QA satisfy that requirement?",
+    "expected": ["DOC-015", "TCK-015"]
+  },
+  {
+    "q": "What should happen if an old subscriber-sync worker resumes after its lease has expired, and what recovery test is still needed?",
+    "expected": ["TCK-014"]
+  },
+  {
+    "q": "What is the office Wi-Fi password?",
+    "expected": []
+  },
+  {
+    "q": "What is the exact monthly price in euros for each Pulse subscription plan?",
+    "expected": []
+  },
+  {
+    "q": "Which cloud provider and production region host Pulse's subscriber database?",
+    "expected": []
+  },
+  {
+    "q": "What percentage increase in seven-day activation did the onboarding email sequence achieve after launch?",
+    "expected": []
+  },
+  {
+    "q": "What is the committed production release date for subscriber CSV export?",
+    "expected": []
+  }
+]
