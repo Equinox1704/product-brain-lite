@@ -1,4 +1,6 @@
 import { readdir, readFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
+import { embed } from "./embed.js";
 import path from "node:path";
 import { fileURLToPath } from "node:url";
 import type { Chunk } from "./types.js";
@@ -17,7 +19,11 @@ function parseFrontMatter(raw: string) {
     const i = line.indexOf(":");
     if (i === -1) continue;
     const key = line.slice(0, i).trim();
-    const value = line.slice(i + 1).replace(/\s+#.*$/, "").trim();
+    const value = line
+        .slice(i + 1)
+        .replace(/\s+#.*$/, "")
+        .trim()
+        .replace(/^["']|["']$/g, "");
     meta[key] = value;
   }
   return { meta, body: m[2]!.trim() };
@@ -74,6 +80,10 @@ export async function loadChunks(): Promise<Chunk[]> {
 
 if (process.argv[1] && import.meta.url.endsWith(path.basename(process.argv[1]))) {
   const chunks = await loadChunks();
-  console.log(`Chunks: ${chunks.length}`);
-  console.log(chunks.slice(0, 3));
+  console.log(`Chunks: ${chunks.length}. Embedding...`);
+  for (const c of chunks) c.embedding = await embed(c.text);
+  const outPath = path.resolve(__dirname, "../data/index.json");
+  await mkdir(path.dirname(outPath), { recursive: true });
+  await writeFile(outPath, JSON.stringify(chunks));
+  console.log(`Wrote ${chunks.length} chunks to ${outPath}`);
 }

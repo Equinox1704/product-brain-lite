@@ -1,122 +1,65 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from "react";
+import { useMutation } from "@tanstack/react-query";
+import { ask } from "./api";
+import AnswerView from "./AnswerView";
+import SourcePanel from "./SourcePanel";
 
-function App() {
-  const [count, setCount] = useState(0)
+const TYPES = ["doc", "ticket", "chat"];
+
+export default function App() {
+  const [question, setQuestion] = useState("");
+  const [types, setTypes] = useState<string[]>([]);
+  const [activeId, setActiveId] = useState<string | null>(null);
+
+  const mutation = useMutation({ mutationFn: () => ask(question, types) });
+
+  const toggle = (t: string) =>
+    setTypes((cur) => (cur.includes(t) ? cur.filter((x) => x !== t) : [...cur, t]));
+
+  const submit = (e: React.FormEvent) => {
+    e.preventDefault();
+    setActiveId(null);
+    mutation.mutate();
+  };
 
   return (
-    <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.tsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
+    <main>
+      <h1>Product Brain Lite</h1>
+      <p className="sub">Ask questions about the Pulse documents. Answers cite their sources.</p>
+
+      <form onSubmit={submit}>
+        <input
+          value={question}
+          onChange={(e) => setQuestion(e.target.value)}
+          placeholder="Why was the export feature postponed?"
+          maxLength={500}
+        />
+        <button type="submit" disabled={mutation.isPending || question.trim().length < 3}>
+          {mutation.isPending ? "Searching…" : "Ask"}
         </button>
-      </section>
+      </form>
 
-      <div className="ticks"></div>
+      <div className="filters">
+        {TYPES.map((t) => (
+          <label key={t}>
+            <input type="checkbox" checked={types.includes(t)} onChange={() => toggle(t)} />
+            {t}
+          </label>
+        ))}
+      </div>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+      {mutation.isError && <p className="error">{mutation.error.message}</p>}
+      {mutation.isIdle && <p className="empty">Try a question to get started.</p>}
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
-    </>
-  )
+      {mutation.data && (
+        <>
+          <AnswerView answer={mutation.data.answer} activeId={activeId} onSelect={setActiveId} />
+          {mutation.data.refused && (
+            <p className="empty">No supported answer found in the documents.</p>
+          )}
+          <SourcePanel sources={mutation.data.sources} activeId={activeId} />
+        </>
+      )}
+    </main>
+  );
 }
-
-export default App

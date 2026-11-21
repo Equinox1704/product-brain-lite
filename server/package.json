@@ -6,8 +6,10 @@
   "scripts": {
     "dev": "tsx watch src/index.ts",
     "ingest": "tsx src/ingest.ts",
-    "eval": "tsx eval/run-eval.ts"
-},
+    "eval": "tsx eval/run-eval.ts",
+    "search": "tsx src/search.ts",
+    "ask": "tsx src/ask.ts"
+  },
   "keywords": [],
   "author": "",
   "license": "ISC",
@@ -17,6 +19,7 @@
     "cors": "^2.8.6",
     "dotenv": "^18.0.10",
     "express": "^5.3.0",
+    "express-rate-limit": "^8.7.5",
     "zod": "^4.6.7"
   },
   "devDependencies": {
