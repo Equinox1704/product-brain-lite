@@ -28,6 +28,23 @@ for (const item of questions) {
   const hits = topK(await embed(item.q), index, 5);
   const top = hits[0]?.score ?? 0;
   const isAnswerable = item.expected.length > 0;
+  if (item.q.includes("hard-bounce suppression")) {
+    console.log(
+      JSON.stringify(
+        {
+          question: item.q,
+          expected: item.expected,
+          top3: hits.slice(0, 3).map(({ c, score }) => ({
+            id: c.id,
+            score,
+            text: c.text,
+          })),
+        },
+        null,
+        2
+      )
+    );
+}
 
   (isAnswerable ? ansScores : unScores).push(top);
 

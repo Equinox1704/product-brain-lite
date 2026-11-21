@@ -81,7 +81,9 @@ export async function loadChunks(): Promise<Chunk[]> {
 if (process.argv[1] && import.meta.url.endsWith(path.basename(process.argv[1]))) {
   const chunks = await loadChunks();
   console.log(`Chunks: ${chunks.length}. Embedding...`);
-  for (const c of chunks) c.embedding = await embed(c.text);
+  for (const c of chunks) {
+    c.embedding = await embed(c.text);
+  }
   const outPath = path.resolve(__dirname, "../data/index.json");
   await mkdir(path.dirname(outPath), { recursive: true });
   await writeFile(outPath, JSON.stringify(chunks));

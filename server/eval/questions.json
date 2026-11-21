@@ -5,7 +5,7 @@
   },
   {
     "q": "Why is hard-bounce suppression workspace-wide, even when unsubscribe handling can be publication-scoped?",
-    "expected": ["DOC-008", "DOC-005"]
+    "expected": ["DOC-008", "CHAT-011"]
   },
   {
     "q": "Does opening an onboarding email complete an in-app checklist task, and what actually determines checklist completion?",

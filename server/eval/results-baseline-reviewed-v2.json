@@ -1,0 +1,20 @@
+{
+  "result": {
+    "label": "baseline-reviewed-v2",
+    "date": "2026-11-21T23:27:43.810Z",
+    "threshold": 0.3,
+    "questions": 23,
+    "answerableTop1": "min 0.526, max 0.738",
+    "unanswerableTop1": "min 0.183, max 0.645",
+    "hitAt3": "17/18 (94.4%)",
+    "falseRefusalRate": "0/18 (0.0%)",
+    "refusalAccuracy": "1/5 (20.0%)"
+  },
+  "failures": [
+    "MISS  top=0.728  Why is hard-bounce suppression workspace-wide, even when unsubscribe handling can be publication-scoped?  -> got TCK-008#1, TCK-005#1, DOC-014#2",
+    "NOT REFUSED  top=0.406  What is the exact monthly price in euros for each Pulse subscription plan?",
+    "NOT REFUSED  top=0.518  Which cloud provider and production region host Pulse's subscriber database?",
+    "NOT REFUSED  top=0.626  What percentage increase in seven-day activation did the onboarding email sequence achieve after launch?",
+    "NOT REFUSED  top=0.645  What is the committed production release date for subscriber CSV export?"
+  ]
+}
