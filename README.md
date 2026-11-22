@@ -14,19 +14,19 @@ This is a personal engineering project built on synthetic data. It does not conn
 
 A minimal question interface with source-type filters and suggested questions.
 
-![Product Brain initial screen with question composer and source filters](C:\Users\Mayank\Desktop\product-brain-lite\client\public\SS_1.png)
+![Product Brain initial screen with question composer and source filters](client/public/SS_1.png)
 
 ### Inspect an answer and its sources
 
 This example asks why hard-bounce suppression is workspace-wide. The response cites retrieved material, and the evidence panel identifies the source type, title, date, chunk ID, and preview.
 
-![Hard-bounce question answered with inline citations and document, ticket, and chat sources](C:\Users\Mayank\Desktop\product-brain-lite\client\public\SS_2.png)
+![Hard-bounce question answered with inline citations and document, ticket, and chat sources](client/public/SS_2.png)
 
 ### Handle information outside the corpus
 
 The office Wi-Fi question returns “I can’t find that in the documents,” without fabricated credentials or source cards.
 
-![Office Wi-Fi question receiving a no-evidence response](C:\Users\Mayank\Desktop\product-brain-lite\client\public\SS_3.png)
+![Office Wi-Fi question receiving a no-evidence response](client/public/SS_3.png)
 
 These screenshots illustrate individual interface states. They are not evidence of general answer accuracy or citation correctness.
 
