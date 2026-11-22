@@ -4,6 +4,7 @@
   "description": "",
   "main": "src/index.ts",
   "scripts": {
+    "start": "tsx src/index.ts",
     "dev": "tsx watch src/index.ts",
     "ingest": "tsx src/ingest.ts",
     "eval": "tsx eval/run-eval.ts",

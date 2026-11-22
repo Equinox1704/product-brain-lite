@@ -9,6 +9,7 @@ const app = express();
 const PORT = Number(process.env.PORT ?? 3001);
 const ORIGIN = process.env.CLIENT_ORIGIN ?? "http://localhost:5173";
 
+app.set("trust proxy", 1);
 app.use(cors({ origin: ORIGIN }));
 app.use(express.json({ limit: "10kb" }));
 app.use("/api/", rateLimit({ windowMs: 60_000, limit: 20 }));
@@ -35,4 +36,4 @@ app.post("/api/ask", async (req, res) => {
   }
 });
 
-app.listen(PORT, () => console.log(`API on http://localhost:${PORT}`));
+app.listen(PORT, "0.0.0.0", () => console.log(`API on http://localhost:${PORT}`));
