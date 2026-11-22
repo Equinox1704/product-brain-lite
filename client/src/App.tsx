@@ -87,7 +87,10 @@ export default function App() {
   return (
     <div className="app-shell">
       <header className="site-header">
-        <div className="wordmark">Product Brain</div>
+        <div className="brand">
+          <img className="brand-logo" src="/logo_p_b.jpg" alt="Product Brain logo" />
+          <div className="wordmark">Product Brain</div>
+        </div>
         <div className="demo-label">Demo · fictional data</div>
       </header>
 
